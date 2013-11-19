@@ -48,6 +48,7 @@ class Wait {
 					case FFun(method):
 						if (method.expr != null) {
 							
+							current = field;
 							original = method.expr.expr.getParameters()[0];
 							method.expr = loop( method.expr );
 							
@@ -66,6 +67,7 @@ class Wait {
 	public static var DECLARTION:Array<Expr> = [];
 	public static var STATE:Option<Array<Expr>> = None;
 	public static var original:Array<Expr> = [];
+	public static var current:Field = null;
 	
 	public static function loop(e:Expr, ?body:Array<Expr>) {
 		var result = e;
@@ -141,7 +143,7 @@ class Wait {
 					result = { expr: EBlock( misfits.concat( nbody ) ), pos: e.pos };
 				}
 				
-			case ECall(e, oparams):
+			case ECall(e, oparams) if (body != null):	// The `if` statement protects again methods without bodies `public function thing(a,cb) cb(a);`
 				
 				// KEY
 				// oparams -> original parameters
@@ -276,18 +278,22 @@ class Wait {
 		var vars:Array<Var> = [];
 		var otype:Type = e.printExpr().find();
 		var ret:Type = null;
+		var ntype:ComplexType = null;
 		
-		for (match in matches) {
+		for (i in 0...matches.length) {
+			var match = matches[i];
 			
 			if (match.exprs.length > 0) {
 				
 				var oarg = otype.args()[match.pos];
+				
 				if (oarg == null) continue;
 				
 				var ftype = Context.follow( oarg.t );
 				
 				switch (ftype) {
-					case TFun(_, _ret):
+					case TFun(_args, _ret):
+						ntype = _args[0].t.toCType();	// TODO Possible break point.
 						ret = _ret;
 						
 					case _:
@@ -306,14 +312,14 @@ class Wait {
 				 * @:wait MyClass.method( [arg1, arg2], [error] );
 				 * Turns `arg1`, `arg2` and `error` into `var arg1, arg2, error;`
 				 */ 
-				vars.push( { name: name, type: null, expr: null } );
+				vars.push( { name: name, type: ntype, expr: macro null } );
 				
 				/*
 				 * @:wait MyClass.method( [arg1, arg2], [error] );
 				 * Creates placeholder args for generated method, prefixing with an
 				 * under score.
 				 */
-				args.push( { name: '_$name', opt: false, type: null, value: null } );
+				args.push( { name: '_$name', opt: false, type: ntype, value: null } );
 				
 				/*
 				 * @:wait MyClass.method( [arg1, arg2], [error] );
