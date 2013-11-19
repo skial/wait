@@ -1,0 +1,14 @@
+{
+  "name": "Wait",
+  "license": "MIT",
+  "classPath": "src",
+  "tags": ["uhu", "macro", "wait"],
+  "description": "Tiny callback helper",
+  "contributors": ["skial"],
+  "releasenote": "Initial Release",
+  "version": "0.0.1-alpha",
+  "url": "https://github.com/skial/wait",
+  "dependencies": {
+    "uhu": ""
+  }
+}

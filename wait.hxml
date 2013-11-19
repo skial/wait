@@ -1,0 +1,4 @@
+-lib uhu
+-cp src
+-neko bin/wait.n
+-main Main
