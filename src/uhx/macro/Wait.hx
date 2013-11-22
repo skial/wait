@@ -1,6 +1,7 @@
 package uhx.macro;
 
 import haxe.ds.Option;
+import haxe.macro.ExprTools;
 import haxe.macro.Type;
 import haxe.macro.Expr;
 import haxe.macro.Context;
@@ -50,7 +51,10 @@ class Wait {
 							
 							current = field;
 							original = method.expr.expr.getParameters()[0];
-							method.expr = loop( method.expr );
+							//method.expr = loop( method.expr );
+							trace( field.printField() );
+							loop( method.expr );
+							trace( field.printField() );
 							
 						}
 						
@@ -69,7 +73,102 @@ class Wait {
 	public static var original:Array<Expr> = [];
 	public static var current:Field = null;
 	
-	public static function loop(e:Expr, ?body:Array<Expr>) {
+	public static function loop(e:Expr) {
+		switch (e.expr) {
+			case EBlock(exprs):
+				var vars = [];
+				var nexprs = [];
+				var len = exprs.length;
+				var index = len-1;
+				//var copy = exprs.copy();
+				
+				while (index >= 0) {
+					var es = exprs[index];
+					var block = null;
+					//var block = exprs.slice(index + 1 > len ? len : index + 1);
+					
+					switch (es) {
+						case macro @:wait $expr( $a { args } ):
+							var fargs = [];
+							var type = expr.printExpr().find();
+							
+							args = args.map( transformArg.bind(_, fargs, function(arg) return type.args()[Lambda.indexOf(args, arg)].t) );
+							//trace( expr.expr );
+							//es.expr = expr.expr;
+							
+							block =  {expr: EVars([{ 
+								name: 'block$STEP', 
+								type: null, 
+								expr: { 
+									expr: EFunction( null, {
+										args: fargs,
+										ret: null,
+										params: [],
+										expr: { 
+											expr: EBlock( nexprs.copy() ), 
+											pos: es.pos 
+										}
+									} ), pos: es.pos 
+								} 
+							}]), pos: es.pos };
+							
+							nexprs = [];
+							
+							STEP++;
+							
+						case _:
+							ExprTools.iter( es, loop );
+							
+					}
+					
+					nexprs.unshift( es );
+					if (block != null) nexprs.unshift( block );
+					
+					index--;
+					
+				}
+				
+				if (nexprs.length > 0) {
+					//e.expr = EBlock([ { expr: EVars(vars), pos: e.pos } ].concat( nexprs ));
+					e.expr = EBlock( nexprs );
+				}
+				
+			case _:
+				ExprTools.iter( e, loop );
+				
+		}
+	}
+	
+	public static function transformArg(arg:Expr, ?fargs:Array<FunctionArg>, ?type:Expr->Type = null) {
+		switch (arg) {
+			case macro [$a { values } ]:
+				//var oindex = Lambda.indexOf( args, arg );
+				//var type = expr.printExpr().find();
+				//var ctype = type.args()[oindex].t.toCType();
+				
+				var blanks = [for (f in fargs) macro null];
+				for (value in values) {
+					//var vi = vars.push( { name: value.printExpr(), type: ctype, expr: macro null } ) - 1;
+					var fi = fargs.push( { name: value.printExpr(), opt: true, type: null/*type(arg).toCType()*/, value: macro null } ) - 1;
+					//block.unshift( macro $i { vars[vi].name } = $i { fargs[fi].name } );
+					blanks.push( macro _ );
+				}
+				
+				var e1 = macro $i { 'block$STEP' };
+				var e2 = blanks.length > 0 ? macro $e1.bind($a { blanks } ) : macro $e1;
+				arg.expr = e2.expr;
+			
+			case macro $call($a { args } ):
+				args = args.map( transformArg.bind(_, fargs, type) );
+				
+			case _:
+				
+		}
+		
+		return arg;
+	}
+	
+	/*public static function loop(e:Expr, ?body:Array<Expr>) {
 		var result = e;
 		
 		switch(e.expr) {
@@ -143,19 +242,12 @@ class Wait {
 					result = { expr: EBlock( misfits.concat( nbody ) ), pos: e.pos };
 				}
 				
-			case ECall(e, oparams) if (body != null):	// The `if` statement protects again methods without bodies `public function thing(a,cb) cb(a);`
+			case ECall(e, oparams) if (body != null):	// The `if` statement protects against methods without bodies `public function thing(a,cb) cb(a);`
 				
 				// KEY
 				// oparams -> original parameters
 				// mparams -> metadata parameters
 				
-				/*var type;
-				for (expr in original) {
-					if (expr.printExpr().startsWith( e.printExpr().split('.')[0] )) {
-						type = expr.typeof();
-						break;
-					}
-				}*/
 				var type = e.printExpr().find();
 				var arity = type.arity();
 				var args = type.args();
@@ -165,18 +257,6 @@ class Wait {
 				switch (STATE) {
 					case None:
 						// Look for array declerations eg. [suc]
-						
-						/*for (i in 0...oparams.length) {
-							
-							switch (oparams[i].expr) {
-								case EArrayDecl(values):
-									matches.push( { exprs: values, pos: i } );
-									
-								case _:
-									
-							}
-							
-						}*/
 						
 						matches = loopECallArgs( oparams );
 						
@@ -196,18 +276,6 @@ class Wait {
 						
 						if (wildcards.length > 0) {
 							// Wildcards found
-							/*for (i in 0...mparams.length) {
-								
-								switch (mparams[i].expr) {
-									case EArrayDecl(values):
-										var val = (wildcards[0] == null) ? oparams.length + i : wildcards.shift();
-										matches.push( { exprs: values, pos: val } );
-										
-									case _:
-										
-								}
-								
-							}*/
 							
 							matches = loopECallArgs( mparams );
 							
@@ -215,18 +283,6 @@ class Wait {
 							
 						} else {
 							// Just push modified mparams to end of oparams
-							
-							/*for (i in 0...mparams.length) {
-								
-								switch (mparams[i].expr) {
-									case EArrayDecl(values):
-										matches.push( { exprs: values, pos: oparams.length + i } );
-										
-									case _:
-										
-								}
-								
-							}*/
 							
 							matches = loopECallArgs( mparams );
 							
@@ -242,7 +298,7 @@ class Wait {
 		}
 		
 		return result;
-	}
+	}*/
 	
 	private static function async(e:Expr, oparams:Array<Expr>, matches:Array<TMatches>, body:Array<Expr>) {
 		// More than one method needs to be creating, but each method needs to have
