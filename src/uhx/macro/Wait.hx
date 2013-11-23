@@ -1,7 +1,5 @@
 package uhx.macro;
 
-import haxe.ds.Option;
-import haxe.macro.ExprTools;
 import haxe.macro.Type;
 import haxe.macro.Expr;
 import haxe.macro.Context;
@@ -37,14 +35,11 @@ class Wait {
 	public static function handler(cls:ClassType, fields:Array<Field>):Array<Field> {
 		
 		if (!Context.defined( 'display' )) {
-			for (field in fields) {
-				
-				switch (field.kind) {
-					case FFun(method) if(method.expr != null): loop( method.expr );
-					case _:
-				}
-				
+			for (field in fields) switch (field.kind) {
+				case FFun(method) if(method.expr != null): loop( method.expr );
+				case _:
 			}
+			
 		}
 		
 		return fields;
@@ -55,7 +50,6 @@ class Wait {
 	public static function loop(e:Expr) {
 		switch (e.expr) {
 			case EBlock(exprs):
-				var vars = [];
 				var nexprs = [];
 				var len = exprs.length;
 				var index = len-1;
