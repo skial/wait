@@ -34,12 +34,9 @@ class Wait {
 
 	public static function handler(cls:ClassType, fields:Array<Field>):Array<Field> {
 		
-		if (!Context.defined( 'display' )) {
-			for (field in fields) switch (field.kind) {
-				case FFun(method) if(method.expr != null): loop( method.expr );
-				case _:
-			}
-			
+		if (!Context.defined( 'display' )) for (field in fields) switch (field.kind) {
+			case FFun(method) if(method.expr != null): loop( method.expr );
+			case _:
 		}
 		
 		return fields;
@@ -88,7 +85,7 @@ class Wait {
 							STEP++;
 							
 						case _:
-							ExprTools.iter( es, loop );
+							es.iter( loop );
 							
 					}
 					
@@ -104,7 +101,7 @@ class Wait {
 				}
 				
 			case _:
-				ExprTools.iter( e, loop );
+				e.iter( loop );
 				
 		}
 	}
