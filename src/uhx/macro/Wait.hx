@@ -115,17 +115,18 @@ class Wait {
 				
 				var blanks = [for (f in fargs) macro null];
 				for (value in values) {
-					var fi = fargs.push( { name: value.toString(), opt: true, type: targ.t.toCType(), value: macro null } ) - 1;
+					var fi = fargs.push( { name: value.toString(), opt: true, type: targ == null ? null : targ.t.toCType(), value: macro null } ) - 1;
 					blanks.push( macro _ );
 				}
 				
 				var e1 = macro $i { 'block$STEP' };
-				var e2 = blanks.length > 0 ? macro $e1.bind($a { blanks } ) : macro $e1;
+				// Adding cast allows it to compile. This is just wrong, but I couldnt figure out the problem... crap burgers!
+				var e2 = blanks.length > 0 ? macro cast $e1.bind($a { blanks } ) : macro $e1;
 				arg.expr = e2.expr;
 			
 			case macro $call($a { args } ):
 				//args = args.map( transformArg.bind(_, targ, fargs) );
-				args = args.mapi( function(index, expr) return transformArg(expr, targ.t.args()[index], fargs) ).array();
+				args = args.mapi( function(index, expr) return transformArg(expr, targ == null ? null : targ.t.args()[index], fargs) ).array();
 				
 			case _:
 				
