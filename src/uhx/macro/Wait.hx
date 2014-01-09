@@ -5,6 +5,7 @@ import haxe.macro.Expr;
 import haxe.macro.Context;
 import uhx.macro.klas.Handler;
 
+using Lambda;
 using uhu.macro.Jumla;
 using haxe.macro.ExprTools;
 
@@ -62,7 +63,8 @@ class Wait {
 							var fargs = [];
 							var type = expr.toString().find();
 							
-							args = args.map( transformArg.bind(_, fargs) );
+							//args = args.map( transformArg.bind(_, type.args(), fargs) );
+							args = args.mapi( function(index, expr) return transformArg(expr, type.args()[index], fargs) ).array();
 							
 							block =  {expr: EVars([{ 
 								name: 'block$STEP', 
@@ -106,13 +108,14 @@ class Wait {
 		}
 	}
 	
-	public static function transformArg(arg:Expr, ?fargs:Array<FunctionArg>) {
+	public static function transformArg(arg:Expr, targ:{ name : String, opt : Bool, t : Type }, ?fargs:Array<FunctionArg>) {
+		
 		switch (arg) {
 			case macro [$a { values } ]:
 				
 				var blanks = [for (f in fargs) macro null];
 				for (value in values) {
-					var fi = fargs.push( { name: value.toString(), opt: true, type: null, value: macro null } ) - 1;
+					var fi = fargs.push( { name: value.toString(), opt: true, type: targ.t.toCType(), value: macro null } ) - 1;
 					blanks.push( macro _ );
 				}
 				
@@ -121,7 +124,8 @@ class Wait {
 				arg.expr = e2.expr;
 			
 			case macro $call($a { args } ):
-				args = args.map( transformArg.bind(_, fargs) );
+				//args = args.map( transformArg.bind(_, targ, fargs) );
+				args = args.mapi( function(index, expr) return transformArg(expr, targ.t.args()[index], fargs) ).array();
 				
 			case _:
 				
