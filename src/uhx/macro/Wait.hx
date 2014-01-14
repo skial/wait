@@ -3,7 +3,7 @@ package uhx.macro;
 import haxe.macro.Type;
 import haxe.macro.Expr;
 import haxe.macro.Context;
-import uhx.macro.klas.Handler;
+import uhx.macro.KlasImpl;
 
 using Lambda;
 using uhu.macro.Jumla;
@@ -17,11 +17,11 @@ class Wait {
 	
 	private static function initialize() {
 		try {
-			if (!Handler.setup) {
-				Handler.initalize();
+			if (!KlasImpl.setup) {
+				KlasImpl.initalize();
 			}
 			
-			Handler.DEFAULTS.push(Wait.handler);
+			KlasImpl.DEFAULTS.push(Wait.handler);
 		} catch (e:Dynamic) {
 			// This assumes that `implements Klas` is not being used
 			// but `@:autoBuild` or `@:build` metadata is being used 
@@ -61,10 +61,11 @@ class Wait {
 					switch (es) {
 						case macro @:wait $expr( $a { args } ):
 							var fargs = [];
-							var type = expr.toString().find();
+							var type = try Context.typeof( expr ) catch (e:Dynamic) expr.toString().find();
 							
-							//args = args.map( transformArg.bind(_, type.args(), fargs) );
-							args = args.mapi( function(index, expr) return transformArg(expr, type.args()[index], fargs) ).array();
+							args = args.mapi( function(index, expr) { 
+								return transformArg(expr, type == null ? null : type.args()[index], fargs);
+							} ).array();
 							
 							block =  {expr: EVars([{ 
 								name: 'block$STEP', 
@@ -115,7 +116,8 @@ class Wait {
 				
 				var blanks = [for (f in fargs) macro null];
 				for (value in values) {
-					var fi = fargs.push( { name: value.toString(), opt: true, type: targ == null ? null : targ.t.toCType(), value: macro null } ) - 1;
+					var type = targ == null ? macro:Dynamic : targ.t.toCType();
+					var fi = fargs.push( { name: value.toString(), opt: true, type: type, value: macro null } ) - 1;
 					blanks.push( macro _ );
 				}
 				
