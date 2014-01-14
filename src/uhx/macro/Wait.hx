@@ -21,7 +21,7 @@ class Wait {
 				KlasImpl.initalize();
 			}
 			
-			KlasImpl.DEFAULTS.push(Wait.handler);
+			KlasImpl.DEFAULTS.set('Wait', Wait.handler);
 		} catch (e:Dynamic) {
 			// This assumes that `implements Klas` is not being used
 			// but `@:autoBuild` or `@:build` metadata is being used 
