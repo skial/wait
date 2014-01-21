@@ -3,7 +3,7 @@ package uhx.macro;
 import haxe.macro.Type;
 import haxe.macro.Expr;
 import haxe.macro.Context;
-import uhx.macro.KlasImpl;
+import uhx.macro.KlasImp;
 
 using Lambda;
 using uhu.macro.Jumla;
@@ -17,11 +17,11 @@ class Wait {
 	
 	private static function initialize() {
 		try {
-			if (!KlasImpl.setup) {
-				KlasImpl.initalize();
+			if (!KlasImp.setup) {
+				KlasImp.initalize();
 			}
 			
-			KlasImpl.DEFAULTS.set('Wait', Wait.handler);
+			KlasImp.INLINE_META.set( ~/@:wait\s/, Wait.handler );
 		} catch (e:Dynamic) {
 			// This assumes that `implements Klas` is not being used
 			// but `@:autoBuild` or `@:build` metadata is being used 
@@ -29,18 +29,13 @@ class Wait {
 		}
 	}
 	
-	public static function build():Array<Field> {
-		return handler( Context.getLocalClass().get(), Context.getBuildFields() );
-	}
-
-	public static function handler(cls:ClassType, fields:Array<Field>):Array<Field> {
-		
-		if (!Context.defined( 'display' )) for (field in fields) switch (field.kind) {
-			case FFun(method) if(method.expr != null): loop( method.expr );
+	public static function handler(cls:ClassType, field:Field):Field {
+		if (!Context.defined( 'display' )) switch(field.kind) {
+			case FFun(method) if (method.expr != null): loop( method.expr );
 			case _:
 		}
 		
-		return fields;
+		return field;
 	}
 	
 	public static var STEP:Int = 0;
