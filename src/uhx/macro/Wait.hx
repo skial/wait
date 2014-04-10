@@ -17,10 +17,7 @@ class Wait {
 	
 	private static function initialize() {
 		try {
-			if (!KlasImp.setup) {
-				KlasImp.initalize();
-			}
-			
+			KlasImp.initalize();
 			KlasImp.INLINE_META.set( ~/@:wait\s/, Wait.handler );
 		} catch (e:Dynamic) {
 			// This assumes that `implements Klas` is not being used
@@ -29,8 +26,19 @@ class Wait {
 		}
 	}
 	
+	public static function build():Array<Field> {
+		var cls = Context.getLocalClass().get();
+		var fields = Context.getBuildFields();
+		
+		for (i in 0...fields.length) {
+			fields[i] = handler( cls, fields[i] );
+		}
+		
+		return fields;
+	}
+	
 	public static function handler(cls:ClassType, field:Field):Field {
-		if (!Context.defined( 'display' )) switch(field.kind) {
+		/*if (!Context.defined( 'display' )) */switch(field.kind) {
 			case FFun(method) if (method.expr != null): loop( method.expr );
 			case _:
 		}
@@ -111,6 +119,10 @@ class Wait {
 				
 				var blanks = [for (f in fargs) macro null];
 				for (value in values) {
+					//trace( arg.toString(), targ.name, targ.t.toCType() );
+					// TODO for each name in array, set it's type to matching position in `targ`
+					// so `success` is position 0 in TFunction( [TPath( {...} )] ) and of type `String`.
+					// OUTPUT - [success],success,TFunction([TPath({ name => String, pack => [], params => [] })],TPath({ name => StdTypes, pack => [], params => [], sub => Void }))
 					var type = targ == null ? macro:Dynamic : targ.t.toCType();
 					var fi = fargs.push( { name: value.toString(), opt: true, type: type, value: macro null } ) - 1;
 					blanks.push( macro _ );
