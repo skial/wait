@@ -57,7 +57,8 @@ class Main {
 ## Explanation
 
 Wait transforms any method thats contains `@:wait` by taking all code after the
-`@:wait` line and putting before it a local method whos body contains the code.
+encountered `@:wait`. It then inserts a local method whos body contains 
+the captured code, before the encountered `@:wait`.
 
 ```
 public function new() {
