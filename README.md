@@ -57,8 +57,18 @@ class Main {
 ## Explanation
 
 Wait transforms any method thats contains `@:wait` by taking all code after the
-encountered `@:wait`. It then inserts a local method whos body contains 
+encountered `@:wait`. It then inserts a local method whose body contains 
 the captured code, before the encountered `@:wait`.
+
+The following example is the transformed method body of the constructor from the
+examples above.
+
++ Both `[success]` and `[error]` indicate to the build macro that these parameters
+are methods, both taking a single parameter themselves.
++ The code `@:wait callback(1, 2, [c, d, e])` tells the build macro to create a
+method that has three parameters named `c`, `d` and `e`.
++ The marker `[]` can appear at any point in a method call `@:wait callback(1, [a, b], 2, 3, [c], 4, [d, e])`
++ An empty marker, `[]` equals `Void->Void`.
 
 ```
 public function new() {
