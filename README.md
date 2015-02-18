@@ -13,7 +13,7 @@ And add `-lib wait` to your `hxml` file.
 	
 ## Usage
 
-You have two options, use Yield with [Klas](https://github.com/skial/klas/) or not.
+You have two options, use Wait with [Klas](https://github.com/skial/klas/) or not.
 
 #### With Klas
 
