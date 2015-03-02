@@ -17,7 +17,7 @@ class Wait {
 	
 	private static function initialize() {
 		try {
-			KlasImp.initalize();
+			KlasImp.initialize();
 			KlasImp.INLINE_META.set( ~/@:wait\s/, Wait.handler );
 		} catch (e:Dynamic) {
 			// This assumes that `implements Klas` is not being used
