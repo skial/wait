@@ -53,8 +53,8 @@ install: # setup the target
   - ~/travis-hx/setup.sh
   - zip -r local.zip ./
   - haxelib install utest
-  - haxelib git uhu https://github.com/skial/uhu experimental
-  - haxelib git klas https://github.com/skial/klas master
+  - haxelib git uhu https://github.com/skial/uhu experimental src
+  - haxelib git klas https://github.com/skial/klas master src
   - haxelib local ./local.zip
   - haxelib git uhu-spec https://github.com/skial/uhu-spec master
 
