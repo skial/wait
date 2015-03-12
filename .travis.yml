@@ -55,14 +55,14 @@ before_install: # clone travis-hx repo
 install: # setup the target
   - ~/travis-hx/setup.sh
   - haxelib install utest
-  - unzip -q -o uhu.zip
-  - unzip -q -o klas.zip
-  - unzip -q -o uhu-spec.zip
+  - unzip -o -d ./ uhu.zip
+  - unzip -o -d ./ klas.zip
+  - unzip -o -d ./ uhu-spec.zip
 
 script:
   - cd $TRAVIS_BUILD_DIR
   # build the target. This will call haxe with the HXFLAGS and HXFLAGS_EXTRA environment variables
-  - HXFLAGS="-cp src -main AllTests -D wait -D klas -lib utest" ~/travis-hx/build.sh
+  - HXFLAGS="-cp src -main AllTests -D wait -D klas -lib utest -debug" ~/travis-hx/build.sh
   # run the tests
   - ~/travis-hx/runtests.sh $FILENAME # this will set the $FILENAME defined on the environment variable to run the tests
 
