@@ -58,9 +58,9 @@ install: # setup the target
   - unzip -o -d ./ uhu.zip
   - unzip -o -d ./ klas.zip
   - unzip -o -d ./ uhu-spec.zip
-  - cp -R uhu-experimental/ ./
-  - cp -R klas-master/ ./
-  - cp -R uhu-spec-master/ ./
+  - cp -R uhu-experimental/* ./
+  - cp -R klas-master/* ./
+  - cp -R uhu-spec-master/* ./
 
 script:
   - cd $TRAVIS_BUILD_DIR
