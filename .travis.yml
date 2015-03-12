@@ -54,6 +54,8 @@ before_install: # clone travis-hx repo
 
 install: # setup the target
   - ~/travis-hx/setup.sh
+  - haxelib install hxcs
+  - haxelib install hxjava
   - haxelib install utest
   - unzip -o -d ./ uhu.zip
   - unzip -o -d ./ klas.zip
