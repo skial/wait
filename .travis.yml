@@ -48,9 +48,9 @@ matrix:
 
 before_install: # clone travis-hx repo
   - travis_retry git clone --depth=50 --branch=master git://github.com/waneck/travis-hx.git ~/travis-hx
-  - wget -O uhu.zip uhu-spec https://github.com/skial/uhu/archive/experimental.zip
-  - wget -O klas.zip uhu-spec https://github.com/skial/klas/archive/master.zip
-  - wget -O uhu-spec.zip uhu-spec https://github.com/skial/uhu-spec/archive/master.zip
+  - wget -O uhu.zip https://github.com/skial/uhu/archive/experimental.zip
+  - wget -O klas.zip https://github.com/skial/klas/archive/master.zip
+  - wget -O uhu-spec.zip https://github.com/skial/uhu-spec/archive/master.zip
 
 install: # setup the target
   - ~/travis-hx/setup.sh
