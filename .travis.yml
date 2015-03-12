@@ -60,6 +60,8 @@ install: # setup the target
   - unzip -o -d ./ uhu.zip
   - unzip -o -d ./ klas.zip
   - unzip -o -d ./ uhu-spec.zip
+  - unzip -o -d ./ hxjava.zip
+  - unzip -o -d ./ hxcs.zip
   - haxelib dev hxcs ./hxcs-master/
   - haxelib dev hxjava ./hxjava-master/
   - haxelib dev klas ./klas-master/
