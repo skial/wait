@@ -60,10 +60,10 @@ install: # setup the target
   - unzip -o -d ./ uhu-spec.zip
   - haxelib dev uhu ./uhu-experimental/
   - haxelib dev klas ./klas-master/
-  - haxelib dev uhu-spec ./uhu-spec-master/
+  #- haxelib dev uhu-spec ./uhu-spec-master/
   #- cp -R uhu-experimental/* ./
   #- cp -R klas-master/* ./
-  #- cp -R uhu-spec-master/* ./
+  - cp -R uhu-spec-master/* ./
 
 script:
   - cd $TRAVIS_BUILD_DIR
