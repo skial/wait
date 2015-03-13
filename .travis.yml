@@ -29,7 +29,7 @@ env:
       # optional: FILENAME
     #- TARGET=cpp
       # optional: FILENAME
-    #- TARGET=swf
+    - TARGET=swf
       # optional: FILENAME
     #- TARGET=as3 
       # optional: FILENAME
