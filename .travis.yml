@@ -33,11 +33,11 @@ env:
       # optional: FILENAME
     #- TARGET=as3 
       # optional: FILENAME
-    - TARGET=java
+    #- TARGET=java
       # optional: FILENAME
     #- TARGET=cs
       # optional: FILENAME
-    #- TARGET=python
+    - TARGET=python
       # optional: FILENAME
       # optional: PYTHONCMD
 
