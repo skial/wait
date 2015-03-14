@@ -19,7 +19,7 @@ You have two options, use Wait with [Klas](https://github.com/skial/klas/) or no
 
 #### With Klas
 
-```
+```Haxe
 package ;
 
 class Main implements Klas {
@@ -38,7 +38,7 @@ class Main implements Klas {
 
 #### Without Klas
 
-```
+```Haxe
 package ;
 
 @:autoBuild( uhx.macro.Wait.build() )
@@ -72,7 +72,7 @@ method that has three parameters named `c`, `d` and `e`.
 + The marker `[]` can appear at any point in a method call `@:wait callback(1, [a, b], 2, 3, [c], 4, [d, e])`
 + An empty marker, `[]` equals `Void->Void`.
 
-```
+```Haxe
 public function new() {
     var block0 = function(?success:String->Void = null, ?error:String->Void = null) {
             trace(success);
