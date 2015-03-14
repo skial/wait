@@ -5,6 +5,8 @@ An Await implementation inspired by CSharp's await keyword
 discovered in the [async support in nodejs](https://github.com/koush/node/wiki/"async"-support-in-node.js)
 article.
 
+[![Build Status](https://next.travis-ci.org/skial/wait.svg?branch=master)](https://next.travis-ci.org/skial/wait)
+
 ## Install
 
 `haxelib git wait https://github.com/skial/wait.git`
