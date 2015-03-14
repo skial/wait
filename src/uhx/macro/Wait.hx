@@ -70,7 +70,7 @@ class Wait {
 								return transformArg(expr, type == null ? null : type.args()[index], fargs);
 							} ).array();
 							
-							block =  {expr: EVars([{ 
+							block = {expr: EVars([{ 
 								name: 'block$STEP', 
 								type: null, 
 								expr: { 
@@ -105,7 +105,6 @@ class Wait {
 				if (nexprs.length > 0) {
 					e.expr = EBlock( nexprs );
 				}
-				
 			case _:
 				e.iter( loop );
 				
@@ -118,19 +117,28 @@ class Wait {
 			case macro [$a { values } ]:
 				
 				var blanks = [for (f in fargs) macro null];
-				for (value in values) {
+				for (i in 0...values.length) {
+					var value = values[i];
 					//trace( arg.toString(), targ.name, targ.t.toCType() );
 					// TODO for each name in array, set it's type to matching position in `targ`
 					// so `success` is position 0 in TFunction( [TPath( {...} )] ) and of type `String`.
 					// OUTPUT - [success],success,TFunction([TPath({ name => String, pack => [], params => [] })],TPath({ name => StdTypes, pack => [], params => [], sub => Void }))
 					var type = targ == null ? macro:Dynamic : targ.t.toCType();
-					var fi = fargs.push( { name: value.toString(), opt: true, type: type, value: macro null } ) - 1;
+					
+					switch (type) {
+						case TFunction(_args, _ret):
+							type = _args[i];
+							
+						case _:
+							
+					}
+					var fi = fargs.push( { name: value.toString(), opt: true, type: type } ) - 1;
 					blanks.push( macro _ );
 				}
 				
 				var e1 = macro $i { 'block$STEP' };
 				// Adding cast allows it to compile. This is just wrong, but I couldnt figure out the problem... crap burgers!
-				var e2 = blanks.length > 0 ? macro cast $e1.bind($a { blanks } ) : macro $e1;
+				var e2 = blanks.length > 0 ? macro $e1.bind($a { blanks } ) : macro $e1;
 				arg.expr = e2.expr;
 			
 			case macro $call($a { args } ):
