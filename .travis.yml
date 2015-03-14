@@ -35,7 +35,7 @@ env:
       # optional: FILENAME
     - TARGET=java
       # optional: FILENAME
-    #- TARGET=cs
+    - TARGET=cs
       # optional: FILENAME
     - TARGET=python
       # optional: FILENAME
