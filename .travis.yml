@@ -19,25 +19,25 @@ env:
     #- TARGET=interp
     #- TARGET=macro
       # optional: MACROFLAGS: specify the flags that are unique to building/running with --macro arguments
-    #- TARGET=js TOOLCHAIN=default # target is tested by node.js
+    - TARGET=js TOOLCHAIN=default # target is tested by node.js
       # optional: FILENAME
       # optional: NODECMD: set the command to be run by nodejs
     #- TARGET=js TOOLCHAIN=browser # target is tested by browsers / phantomjs
       # optional: FILENAME
       # optional: SAUCE_BROWSERS: specify the .json file that specifies the SauceLabs browsers to test. Defaults to `.sauce-browsers.json`
-    #- TARGET=php
+    - TARGET=php
       # optional: FILENAME
-    #- TARGET=cpp
+    - TARGET=cpp
       # optional: FILENAME
-    #- TARGET=swf
+    - TARGET=swf
       # optional: FILENAME
     #- TARGET=as3 
       # optional: FILENAME
-    #- TARGET=java
+    - TARGET=java
       # optional: FILENAME
-    #- TARGET=cs
+    - TARGET=cs
       # optional: FILENAME
-    #- TARGET=python
+    - TARGET=python
       # optional: FILENAME
       # optional: PYTHONCMD
 
@@ -51,6 +51,8 @@ before_install: # clone travis-hx repo
   - wget -O uhu.zip https://github.com/skial/uhu/archive/experimental.zip
   - wget -O klas.zip https://github.com/skial/klas/archive/master.zip
   - wget -O uhu-spec.zip https://github.com/skial/uhu-spec/archive/master.zip
+  - wget -O hxjava.zip https://github.com/HaxeFoundation/hxjava/archive/master.zip
+  - wget -O hxcs.zip https://github.com/HaxeFoundation/hxcs/archive/master.zip
 
 install: # setup the target
   - ~/travis-hx/setup.sh
@@ -58,11 +60,12 @@ install: # setup the target
   - unzip -o -d ./ uhu.zip
   - unzip -o -d ./ klas.zip
   - unzip -o -d ./ uhu-spec.zip
-  #- haxelib dev uhu ./uhu-experimental/
+  - unzip -o -d ./ hxjava.zip
+  - unzip -o -d ./ hxcs.zip
+  - haxelib dev hxcs ./hxcs-master/
+  - haxelib dev hxjava ./hxjava-master/
   - haxelib dev klas ./klas-master/
-  #- haxelib dev uhu-spec ./uhu-spec-master/
   - cp -R uhu-experimental/* ./
-  #- cp -R klas-master/* ./
   - cp -R uhu-spec-master/* ./
 
 script:
