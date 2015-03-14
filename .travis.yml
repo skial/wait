@@ -27,7 +27,7 @@ env:
       # optional: SAUCE_BROWSERS: specify the .json file that specifies the SauceLabs browsers to test. Defaults to `.sauce-browsers.json`
     - TARGET=php
       # optional: FILENAME
-    #- TARGET=cpp
+    - TARGET=cpp
       # optional: FILENAME
     - TARGET=swf
       # optional: FILENAME
