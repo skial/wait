@@ -74,10 +74,10 @@ examples above.
 
 ```Haxe
 public function new() {
-    var block0 = function(?success:String->Void = null, ?error:String->Void = null) {
+    var block0 = function(?success:String, ?error:String) {
             trace(success);
     };
-    asyncTask(100, 10000, cast block0.bind(_), cast block0.bind(null, _));
+    asyncTask(100, 10000, block0.bind(_), block0.bind(null, _));
 }
 ```
 
