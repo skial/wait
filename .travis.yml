@@ -57,6 +57,7 @@ before_install: # clone travis-hx repo
 install: # setup the target
   - ~/travis-hx/setup.sh
   - haxelib install utest
+  - haxelib install msignal
   - unzip -o -d ./ uhu.zip
   - unzip -o -d ./ klas.zip
   - unzip -o -d ./ uhu-spec.zip
