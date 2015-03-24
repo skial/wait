@@ -18,7 +18,7 @@ class Wait {
 	private static function initialize() {
 		try {
 			KlasImp.initialize();
-			KlasImp.INLINE_META.set( ~/@:wait\s/, Wait.handler );
+			KlasImp.inlineMetadata.add( ~/@:wait\s/, Wait.handler );
 		} catch (e:Dynamic) {
 			// This assumes that `implements Klas` is not being used
 			// but `@:autoBuild` or `@:build` metadata is being used 
